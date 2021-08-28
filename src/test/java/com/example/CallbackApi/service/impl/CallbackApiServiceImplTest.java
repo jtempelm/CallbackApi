@@ -1,6 +1,7 @@
 package com.example.CallbackApi.service.impl;
 
 import com.example.CallbackApi.dto.BodyRequest;
+import com.example.CallbackApi.dto.CallbackProcessedRequest;
 import com.example.CallbackApi.dto.StartCallbackRequest;
 import com.example.CallbackApi.dto.ThirdPartyCallbackRequest;
 import com.example.CallbackApi.model.Callback;
@@ -76,5 +77,34 @@ class CallbackApiServiceImplTest { //I could obviously write more tests for edge
 
         callback = callbackRepository.findByCallbackId(callbackId);
         assertEquals(callback.getStatus(), StatusEnum.STARTED.toString());
+    }
+
+    @Test
+    public void updateCallbackStatus_StatusMustExistTest() {
+        final String callbackId = startCallbackTest();
+
+        Callback callback = callbackRepository.findByCallbackId(callbackId);
+        assertNotNull(callback);
+        assertEquals(callback.getStatus(), StatusEnum.NOT_STARTED.toString());
+
+        ResponseStatusException badRequestException = Assertions.assertThrows(ResponseStatusException.class, () -> {
+            callbackApiService.updateCallbackStatus(callbackId, new CallbackProcessedRequest("not a Status", "details"));
+        });
+
+        assertEquals(badRequestException.getStatus(), HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    public void updateCallbackStatusTest() {
+        final String callbackId = startCallbackTest();
+
+        Callback callback = callbackRepository.findByCallbackId(callbackId);
+        assertNotNull(callback);
+        assertEquals(callback.getStatus(), StatusEnum.NOT_STARTED.toString());
+
+        callbackApiService.updateCallbackStatus(callbackId, new CallbackProcessedRequest(StatusEnum.PROCESSED.toString(), "details"));
+
+        callback = callbackRepository.findByCallbackId(callbackId);
+        assertEquals(callback.getStatus(), StatusEnum.PROCESSED.toString());
     }
 }

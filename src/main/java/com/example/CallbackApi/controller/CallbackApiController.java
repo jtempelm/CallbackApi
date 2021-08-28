@@ -1,6 +1,7 @@
 package com.example.CallbackApi.controller;
 
 import com.example.CallbackApi.dto.BodyRequest;
+import com.example.CallbackApi.dto.CallbackProcessedRequest;
 import com.example.CallbackApi.dto.StartCallbackRequest;
 import com.example.CallbackApi.service.CallbackApiService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,10 +29,16 @@ public class CallbackApiController {
     }
 
     @PostMapping("/callback/{callbackId}") //Afterward, the service will send an initial POST with the text string `STARTED` to indicate -it's- they received the request. ? typo in spec "it's"
-    public ResponseEntity<String> callbackStarted(@PathVariable String callbackId, @RequestBody BodyRequest callbackAcknowledgedRequest) {
+    public ResponseEntity<String> markCallbackStarted(@PathVariable String callbackId, @RequestBody BodyRequest callbackAcknowledgedRequest) {
         callbackApiService.markCallbackAsStarted(callbackId, callbackAcknowledgedRequest);
 
         return new ResponseEntity<String>("", HttpStatus.NO_CONTENT);
     }
 
+    @PutMapping
+    public ResponseEntity<String> updateCallbackStatus(@PathVariable String callbackId, @RequestBody CallbackProcessedRequest callbackUpdateRequest) {
+        callbackApiService.updateCallbackStatus(callbackId, callbackUpdateRequest);
+
+        return new ResponseEntity<String>("", HttpStatus.NO_CONTENT);
+    }
 }

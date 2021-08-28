@@ -1,6 +1,7 @@
 package com.example.CallbackApi.service.impl;
 
 import com.example.CallbackApi.dto.BodyRequest;
+import com.example.CallbackApi.dto.CallbackProcessedRequest;
 import com.example.CallbackApi.dto.StartCallbackRequest;
 import com.example.CallbackApi.dto.ThirdPartyCallbackRequest;
 import com.example.CallbackApi.gateway.ThirdPartyServiceGateway;
@@ -8,7 +9,6 @@ import com.example.CallbackApi.model.Callback;
 import com.example.CallbackApi.repository.CallbackRepository;
 import com.example.CallbackApi.service.CallbackApiService;
 import com.example.CallbackApi.util.StatusEnum;
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -43,13 +43,40 @@ public class CallbackApiServiceImpl implements CallbackApiService {
 
     @Override
     public void markCallbackAsStarted(final String callbackId, final BodyRequest callbackAcknowledgedRequest) {
+        Callback callback = getCallbackOrThrowNotFound(callbackId);
+
+        callback.setStatus(StatusEnum.STARTED.toString()); //what if it was already started? Well we could handle that too
+        callbackRepository.save(callback);
+    }
+
+    @Override
+    public void updateCallbackStatus(final String callbackId, final CallbackProcessedRequest callbackUpdateRequest) {
+        Callback callback = getCallbackOrThrowNotFound(callbackId);
+
+
+        final String newStatus = callbackUpdateRequest.getStatus();
+
+        boolean statusMatched = false;
+        for(StatusEnum status : StatusEnum.values()){
+            if(status.toString().equals(newStatus)){
+                callback.setStatus(status.toString());
+                statusMatched = true;
+                break;
+            }
+        }
+        if(!statusMatched){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Status specified was not recognized");
+        }
+
+        callbackRepository.save(callback);
+    }
+
+    private Callback getCallbackOrThrowNotFound(final String callbackId) {
         Callback callback = callbackRepository.findByCallbackId(callbackId);
         if (callback == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No callback by that id");
         }
-
-        callback.setStatus(StatusEnum.STARTED.toString()); //what if it was already started? Well we could handle that too
-        callbackRepository.save(callback);
+        return callback;
     }
 
     protected ThirdPartyCallbackRequest getThirdPartyCallbackRequest(final String body, final String callbackId) {
