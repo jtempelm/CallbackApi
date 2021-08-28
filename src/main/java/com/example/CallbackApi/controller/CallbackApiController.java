@@ -17,11 +17,9 @@ public class CallbackApiController {
     CallbackApiService callbackApiService;
 
     @PostMapping("/request")
-    public ResponseEntity<StatusResponse> callDownstreamService(@RequestBody StartCallbackRequest startCallbackRequest) {
-        final String callbackId = callbackApiService.startCallback(startCallbackRequest);
-
-        return new ResponseEntity<StatusResponse>(new StatusResponse("ok"), HttpStatus.OK);
-//        return new ResponseEntity<String>(callbackId, HttpStatus.OK); //the spec said to return a string, fine, but a response body with {"type":"thirdPartyCallback", "id": "\{id\}"} might be nice context to give
+    public String callDownstreamService(@RequestBody StartCallbackRequest startCallbackRequest) {
+        return callbackApiService.startCallback(startCallbackRequest);
+//        return new ResponseEntity<StatusResponse>(new StatusResponse("ok"), HttpStatus.OK); //the spec said to return a string, fine, but a response body with {"type":"thirdPartyCallback", "id": "\{id\}"} might be nice context to give
     }
 
 }
