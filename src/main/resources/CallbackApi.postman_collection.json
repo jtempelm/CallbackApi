@@ -1,0 +1,131 @@
+{
+	"info": {
+		"_postman_id": "140b68af-76fc-43b9-90c3-2e006b8744e9",
+		"name": "CallbackApi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "startCallback",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"body\": \"text\"\n}"
+				},
+				"url": {
+					"raw": "http://{{hostname}}/request",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"path": [
+						"request"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "awknowledgeCallback",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"body\": \"text\"\n}"
+				},
+				"url": {
+					"raw": "http://{{hostname}}/callback/9960e825-ee9c-44bb-9aa1-ed5d34d7bd6f",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"path": [
+						"callback",
+						"9960e825-ee9c-44bb-9aa1-ed5d34d7bd6f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Callback",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"status\": \"PROCESSED\",\n    \"details\": \"details\"\n}"
+				},
+				"url": {
+					"raw": "http://{{hostname}}/callback/9960e825-ee9c-44bb-9aa1-ed5d34d7bd6f",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"path": [
+						"callback",
+						"9960e825-ee9c-44bb-9aa1-ed5d34d7bd6f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getCallback",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{hostname}}/callback/9960e825-ee9c-44bb-9aa1-ed5d34d7bd6f",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"path": [
+						"callback",
+						"9960e825-ee9c-44bb-9aa1-ed5d34d7bd6f"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
