@@ -9,7 +9,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class StatusResponse {
+public class GetStatusResponse {
 
     String status;
+
+    String detail;
+
+    String body;
 }

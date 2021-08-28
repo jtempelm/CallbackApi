@@ -30,4 +30,9 @@ public class Callback {
     @Column(name = "status")
     String status;
 
+    @Column(name = "body")
+    String body;
+
+    @Column(name = "detail")
+    String detail;
 }

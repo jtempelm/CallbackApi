@@ -2,6 +2,7 @@ package com.example.CallbackApi.service.impl;
 
 import com.example.CallbackApi.dto.BodyRequest;
 import com.example.CallbackApi.dto.CallbackProcessedRequest;
+import com.example.CallbackApi.dto.GetStatusResponse;
 import com.example.CallbackApi.dto.StartCallbackRequest;
 import com.example.CallbackApi.dto.ThirdPartyCallbackRequest;
 import com.example.CallbackApi.model.Callback;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SpringBootTest
-class CallbackApiServiceImplTest { //I could obviously write more tests for edge cases and would for prod code but c'mon time ain't free
+class CallbackApiServiceImplTest { //I could obviously write more tests for edge cases (integration not just unit) and would for prod code but c'mon time ain't free
 
     @Autowired
     CallbackApiServiceImpl callbackApiService;
@@ -106,5 +107,21 @@ class CallbackApiServiceImplTest { //I could obviously write more tests for edge
 
         callback = callbackRepository.findByCallbackId(callbackId);
         assertEquals(callback.getStatus(), StatusEnum.PROCESSED.toString());
+    }
+
+    //and end to end unit test that procs all four of these in order is definitely important, I haven't gotten to the UI yet
+    @Test
+    public void getCallbackTest() {
+        final String callbackId = startCallbackTest();
+
+        Callback callback = callbackRepository.findByCallbackId(callbackId);
+        assertNotNull(callback);
+        assertEquals(callback.getStatus(), StatusEnum.NOT_STARTED.toString());
+
+        GetStatusResponse getStatusResponse = callbackApiService.getCallbackStatus(callbackId);
+
+        assertEquals(getStatusResponse.getStatus(), callback.getStatus());
+        assertEquals(getStatusResponse.getBody(), getStatusResponse.getBody());
+        assertEquals(getStatusResponse.getDetail(), getStatusResponse.getDetail());
     }
 }

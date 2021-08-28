@@ -2,12 +2,14 @@ package com.example.CallbackApi.service.impl;
 
 import com.example.CallbackApi.dto.BodyRequest;
 import com.example.CallbackApi.dto.CallbackProcessedRequest;
+import com.example.CallbackApi.dto.GetStatusResponse;
 import com.example.CallbackApi.dto.StartCallbackRequest;
 import com.example.CallbackApi.dto.ThirdPartyCallbackRequest;
 import com.example.CallbackApi.gateway.ThirdPartyServiceGateway;
 import com.example.CallbackApi.model.Callback;
 import com.example.CallbackApi.repository.CallbackRepository;
 import com.example.CallbackApi.service.CallbackApiService;
+import com.example.CallbackApi.util.CallbackTransformer;
 import com.example.CallbackApi.util.StatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,6 +34,7 @@ public class CallbackApiServiceImpl implements CallbackApiService {
         Callback callback = new Callback();
         callback.setCallbackId(callbackId);
         callback.setStatus(StatusEnum.NOT_STARTED.toString());
+        callback.setBody(startCallbackRequest.getBody());
         callbackRepository.save(callback);
 
         thirdPartyServiceGateway.thirdPartyStartCallback(
@@ -53,22 +56,29 @@ public class CallbackApiServiceImpl implements CallbackApiService {
     public void updateCallbackStatus(final String callbackId, final CallbackProcessedRequest callbackUpdateRequest) {
         Callback callback = getCallbackOrThrowNotFound(callbackId);
 
-
         final String newStatus = callbackUpdateRequest.getStatus();
 
         boolean statusMatched = false;
-        for(StatusEnum status : StatusEnum.values()){
-            if(status.toString().equals(newStatus)){
+        for (StatusEnum status : StatusEnum.values()) {
+            if (status.toString().equals(newStatus)) {
                 callback.setStatus(status.toString());
+                callback.setDetail(callbackUpdateRequest.getDetails());
                 statusMatched = true;
                 break;
             }
         }
-        if(!statusMatched){
+        if (!statusMatched) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Status specified was not recognized");
         }
 
         callbackRepository.save(callback);
+    }
+
+    @Override
+    public GetStatusResponse getCallbackStatus(final String callbackId) {
+        Callback callback = getCallbackOrThrowNotFound(callbackId);
+
+        return CallbackTransformer.callbackToGetStatusResponse(callback);
     }
 
     private Callback getCallbackOrThrowNotFound(final String callbackId) {
