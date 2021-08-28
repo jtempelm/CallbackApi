@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class CallbackApiApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(CallbackApiApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(CallbackApiApplication.class, args);
+    }
 
 }
